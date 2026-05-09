@@ -17,9 +17,10 @@ namespace DarkMultiPlayerServer.Messages
             newMessage.type = ServerMessageType.SERVER_SETTINGS;
             using (MessageWriter mw = new MessageWriter())
             {
+                bool playerCanUseCheats = Settings.settingsStore.cheats && CheatSystem.fetch.IsCheatUser(client.playerName);
                 mw.Write<int>((int)Settings.settingsStore.warpMode);
                 mw.Write<int>((int)Settings.settingsStore.gameMode);
-                mw.Write<bool>(Settings.settingsStore.cheats);
+                mw.Write<bool>(playerCanUseCheats);
                 //Tack the amount of kerbals, vessels and scenario modules onto this message
                 mw.Write<int>(numberOfKerbals);
                 mw.Write<int>(numberOfVessels);
@@ -74,4 +75,3 @@ namespace DarkMultiPlayerServer.Messages
         }
     }
 }
-
