@@ -11,21 +11,27 @@ namespace DarkMultiPlayerServer
             string playerName = "";
 
             func = commandArgs;
-            if (commandArgs.Contains(" "))
+            int separatorIndex = commandArgs.IndexOf(" ", StringComparison.Ordinal);
+            if (separatorIndex != -1)
             {
-                func = commandArgs.Substring(0, commandArgs.IndexOf(" ", StringComparison.Ordinal));
-                if (commandArgs.Substring(func.Length).Contains(" "))
+                func = commandArgs.Substring(0, separatorIndex);
+                if (commandArgs.Length > separatorIndex + 1)
                 {
-                    playerName = commandArgs.Substring(func.Length + 1);
+                    playerName = commandArgs.Substring(separatorIndex + 1);
                 }
             }
 
             switch (func)
             {
                 default:
-                    DarkLog.Normal("Undefined function. Usage: /cheat [add|del] playername or /cheat show");
+                    DarkLog.Normal("Undefined function. Usage: /cheat [add|del|show] [playername]");
                     break;
                 case "add":
+                    if (string.IsNullOrWhiteSpace(playerName) || !SafeFile.IsNameSafe(playerName))
+                    {
+                        DarkLog.Normal("Invalid player name.");
+                        break;
+                    }
                     if (File.Exists(Path.Combine(Server.universeDirectory, "Players", playerName + ".txt")))
                     {
                         if (!CheatSystem.fetch.IsCheatUser(playerName))
@@ -45,6 +51,11 @@ namespace DarkMultiPlayerServer
                     }
                     break;
                 case "del":
+                    if (string.IsNullOrWhiteSpace(playerName) || !SafeFile.IsNameSafe(playerName))
+                    {
+                        DarkLog.Normal("Invalid player name.");
+                        break;
+                    }
                     if (CheatSystem.fetch.IsCheatUser(playerName))
                     {
                         DarkLog.Normal("Removed '" + playerName + "' from the cheat list.");
@@ -57,9 +68,17 @@ namespace DarkMultiPlayerServer
                     }
                     break;
                 case "show":
-                    foreach (string player in CheatSystem.fetch.GetCheatUsers())
+                    string[] cheatUsers = CheatSystem.fetch.GetCheatUsers();
+                    if (cheatUsers.Length == 0)
                     {
-                        DarkLog.Normal(player);
+                        DarkLog.Normal("No players on cheat list.");
+                    }
+                    else
+                    {
+                        foreach (string player in cheatUsers)
+                        {
+                            DarkLog.Normal(player);
+                        }
                     }
                     break;
             }

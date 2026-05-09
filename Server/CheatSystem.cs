@@ -28,15 +28,24 @@ namespace DarkMultiPlayerServer
         private void LoadCheatUsers()
         {
             DarkLog.Debug("Loading cheat users");
-            cheatUsers.Clear();
+            lock (cheatUsers)
+            {
+                cheatUsers.Clear();
 
-            if (File.Exists(cheatListFile))
-            {
-                cheatUsers.AddRange(File.ReadAllLines(cheatListFile));
-            }
-            else
-            {
-                SaveCheatUsers();
+                if (File.Exists(cheatListFile))
+                {
+                    foreach (string user in File.ReadAllLines(cheatListFile))
+                    {
+                        if (!string.IsNullOrWhiteSpace(user) && !cheatUsers.Contains(user))
+                        {
+                            cheatUsers.Add(user);
+                        }
+                    }
+                }
+                else
+                {
+                    SaveCheatUsers();
+                }
             }
         }
 
