@@ -18,6 +18,7 @@ In Linux or macOS, you must have [Mono](http://mono-project.com) installed to be
 
 You can configure your server by editing `Config/Settings.txt`.  
 If your server's game difficulty is set to `CUSTOM`, you can alter gameplay settings by editing `Config/GameplaySettings.txt`.
+When `cheats = true`, only usernames listed in `Config/cheats.txt` can use cheats. You can manage this list with `/cheat add <player>`, `/cheat del <player>`, and `/cheat show`.
 
 ## Compiling
 - Copy the assemblies from `[KSP root folder]/KSP_Data/Managed` to `External/KSPManaged`:
